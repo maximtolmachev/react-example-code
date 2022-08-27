@@ -1,0 +1,16 @@
+.listWrapper {
+  width: 100%;
+  max-width: 400px;
+}
+.list {
+  border: 1px solid black;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+}
