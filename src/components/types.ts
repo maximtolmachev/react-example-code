@@ -139,4 +139,9 @@ export interface IListItemDetailsRepos {
   web_commit_signoff_required: boolean
 }
 
-export type IRepoListItem = Pick<IListItemDetailsRepos, "name" | "stargazers_count" | "forks_count" | "id">
+export type IRepoListItem = Pick<IListItemDetailsRepos, "name" | "stargazers_count" | "forks_count" | "id" | "url">
+
+export interface IListItemRepos {
+  item: IRepoListItem
+  loginParam: string | undefined
+}

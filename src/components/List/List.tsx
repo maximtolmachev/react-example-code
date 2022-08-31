@@ -1,4 +1,4 @@
-import { FC, useEffect, ChangeEvent, useMemo } from "react";
+import { FC, useEffect, ChangeEvent, useMemo, useState } from "react";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import apiCall from "../../services/apiCall";
 import ListItem from "../ListItem";
@@ -6,7 +6,7 @@ import { IFullListItem, IListITem, IRepositoryData } from "../types";
 import './List.scss'
 
 const List: FC = () => {
-  const [users, setUsers] = useLocalStorage<IFullListItem[]>("users", [])
+  const [users, setUsers] = useState<IFullListItem[]>([])
   const [searchUsersValue, setSearchUsersValue] = useLocalStorage<string>("searchUsersValue",'')
   const handleOnChange = (e: ChangeEvent<HTMLInputElement>) => {
     setSearchUsersValue(e.target.value)
@@ -22,7 +22,7 @@ const List: FC = () => {
           const elem = await apiCall({ url: `users/${login}`})
           repoData.push(elem)
         }
-        const updatedRepoData = await data.map((el: IListITem) => {
+        const updatedRepoData = data.map((el: IListITem) => {
           const repoDataElem = repoData.find(repoElem => el.id === repoElem.id)
           return {
             ...el,
@@ -36,7 +36,8 @@ const List: FC = () => {
       }
     }
     getUsers()
-  }, [setUsers])
+     // eslint-disable-next-line
+  }, [])
 
   const filteredUsers = useMemo(
     () => users.filter((el: IFullListItem) => el.name.toLowerCase().includes(searchUsersValue.toLowerCase())),

@@ -5,6 +5,7 @@ import '../List/List.scss'
 import './ListItemDetails.scss'
 import apiCall from "../../services/apiCall"
 import { useLocalStorage } from "../../hooks/useLocalStorage"
+import ListItemRepos from "./ListItemRepos"
 
 const ListItemDetails: FC = () => {
   const emptyListItemDetails: IRepositoryData = {
@@ -42,8 +43,8 @@ const ListItemDetails: FC = () => {
     updated_at: ''
   }
   const { loginParam } = useParams()
-  const [user, setUser] = useLocalStorage<IRepositoryData>("user",emptyListItemDetails)
-  const [repos, setRepos] = useLocalStorage<IListItemDetailsRepos[]>("repos", [])
+  const [user, setUser] = useState<IRepositoryData>(emptyListItemDetails)
+  const [repos, setRepos] = useState<IListItemDetailsRepos[]>([])
   const [isVisible, setIsVisible] = useState<boolean>(false)
   const [searchReposValue, setSearchReposValue] = useLocalStorage<string>("searchReposValue",'')
 
@@ -64,7 +65,8 @@ const ListItemDetails: FC = () => {
         const updatedRepos = repositories.map((el: IListItemDetailsRepos) => ({ name: el.name,
         forks_count: el.forks_count,
         stargazers_count: el.stargazers_count,
-        id: el.id
+        id: el.id,
+        url: el.url
         }))
         setRepos(updatedRepos)
       } catch (error) {
@@ -72,12 +74,13 @@ const ListItemDetails: FC = () => {
       }
     }
     getUser()
-  }, [loginParam, setRepos, setUser])
+     // eslint-disable-next-line
+  }, [])
 
   const {avatar_url, login, email, location, id, created_at, followers, following, bio } = user
 
   const filterRepos = useMemo(
-    () => repos.filter((el: IListItemDetailsRepos) => el.name.includes(searchReposValue)),
+    () => repos.filter((el: IListItemDetailsRepos) => el.name.toLowerCase().includes(searchReposValue.toLowerCase())),
     [searchReposValue, repos])
 
   return (
@@ -109,14 +112,8 @@ const ListItemDetails: FC = () => {
         onChange={handleOnChange}
       />
       <ul className="list itemDetails-listRepos">
-        {filterRepos.map(({ name, id, forks_count, stargazers_count }: IRepoListItem) => (
-          <li className="listItem itemDetails-listItem" key={id}>
-            <p>{name}</p>
-            <div className="itemDetails-statistics">
-              <p>{forks_count} Forks</p>
-              <p>{stargazers_count} Stars</p>
-            </div>
-          </li>
+        {filterRepos.map((item: IRepoListItem) => (
+          <ListItemRepos key={item.id} loginParam={loginParam} item={item} />
         ))}
       </ul>
       </div>
